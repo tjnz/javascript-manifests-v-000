@@ -42,3 +42,5 @@ Show how to debug manifest files that require files that can't be found.
 #### Manifests in Production
 
 Show what a concatenated manifest looks like in production.
+
+<p data-visibility='hidden'>View <a href='https://learn.co/lessons/javascript-manifests' title='Javascript Manifests'>Javascript Manifests</a> on Learn.co and start learning to code for free.</p>
