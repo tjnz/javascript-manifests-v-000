@@ -11,13 +11,13 @@
 Our previous lesson gave us a good overview of the Asset Pipeline. We touch briefly on manifest files and how they provide a central place to list the assets we want to load. Let's dive deeper into the JavaScript manifest file.
 
 ### Manifest Files
-Manifest files have special characteristics about them that differentiate them from plain old JS files. If you open your JavaScript manifest, `app/assets/javascripts/application.js`, you will see that some of the lines start with `//=`. This is called a directive and it allows us to tell sprockets that what ever comes after this is important. 
+Manifest files have special characteristics about them that differentiate them from plain old JS files. If you open your JavaScript manifest, `app/assets/javascripts/application.js`, you will see that some of the lines start with `//=`. This is called a directive and it tells sprockets that this isn't a normal JS comment. 
 
 ### `require` directives
 
-While there are a number of [different directives](https://github.com/rails/sprockets#sprockets-directives) available, let's learn with the one that allows us to list the JS files we want to include.  This directive, `require`, tells sprockets that the file we are specifying is required for our application to run. One thing to note is you don't have to put the file extension. If your file is `main.js` then you just need to type `//= require main``.
+While there are a number of [different directives](https://github.com/rails/sprockets#sprockets-directives) available, let's learn about the one that is used to list the JS files we want to include in our application.  This directive, `require`, tells sprockets that the file we are specifying is must be loaded. One thing to note is you don't have to put the file extension. If your file is `main.js` then you only need to type `//= require main``.
 
-You may notice another directive in your manifest file. The `require_tree` directive tells sprockets to load all files in a give folder. By default the manifest file includes a `//= require_tree .` which will include all JS files in the folder that `application.js` is located. This makes adding new JS files really easy to include in our application but can cause problems later on. As you application grows you may not want all of the JS loaded everywhere. For example, you may have two pages that have the same button but you want those two buttons to behave differently. If all JS is loaded all the time then the browser will get confused which click binding to use.
+You may notice another directive in your manifest file. The `require_tree` directive tells sprockets to load all files in the given folder. By default, the manifest file has `//= require_tree .` which will include all JS files in the same folder that `application.js` is located. This makes adding new JS files into our application really easy but can cause problems. As you application grows, you may not want all of the JS loaded everywhere. For example, say you have two pages that have a similiar button. You want those two buttons to behave differently even though they look the same. If all JS is loaded all the time, then the browser will get confused what JS should be applied to these buttons. In the end, it's generally better to control what JS is being loaded for each page.
 
 One last thing to remember, when you require something in your manifest file, the path you provide must be the asset path. If you have the file `comments.js` in the folder `/assets/blog` you would need to use `//= require blog/comments` to include it in our manifest file.
 
@@ -30,7 +30,7 @@ Now that we have our manifest file, we need to include it in our application. Th
 <%= javascript_include_tag "application" %>
 ```
 
-Sprockets will then take care of loading our manifest file and determining what assets are required. If we are in development mode, each asset will be loaded individually. 
+Sprockets will then take care of loading our manifest file and determining what assets to load. If we are in development mode, each asset will be loaded individually.
 
 ```html
 <script src="assets/jquery.min.js" />
