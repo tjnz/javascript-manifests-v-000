@@ -8,39 +8,43 @@
 4. See a Manifest in Development vs Production
 
 ## Outline
+Our previous lesson gave us a good overview of the Asset Pipeline. We touch briefly on manifest files and how they provide a central place to list the assets we want to load. Let's dive deeper into the JavaScript manifest file.
 
 ### Manifest Files
-
-There are two things that make a JS file in app/assets a manifest file as opposed to actual JS code.
-
-1. You load it into a main layout via javascript_include_tag
-
-2. You use the magic "sprocket" directives that are valid JS comments that look like:
-
-//=
+Manifest files have special characteristics about them that differentiate them from plain old JS files. If you open your JavaScript manifest, `app/assets/javascripts/application.js`, you will see that some of the lines start with `//=`. This is called a directive and it tells sprockets that this isn't a normal JS comment. 
 
 ### `require` directives
 
-Let's learn about the directives available to you to require files into a manifest.
+While there are a number of [different directives](https://github.com/rails/sprockets#sprockets-directives) available, let's learn about the one that is used to list the JS files we want to include in our application.  This directive, `require`, tells sprockets that the file we are specifying should be loaded. One thing to note is you don't have to put the file extension. If your file is `main.js` then you only need to type `//= require main``.
 
-https://github.com/rails/sprockets#sprockets-directives
+You may notice another directive in your manifest file. The `require_tree` directive tells sprockets to load all files in the given folder. By default, the manifest file has `//= require_tree .` which will include all JS files in the same folder that `application.js` is located. This makes adding new JS files into our application really easy but can cause problems. As your application grows, you may not want all of the JS loaded everywhere. For example, say you have two pages that have a similiar button. You want those two buttons to behave differently even though they look the same. If all JS is loaded all the time, then the browser will not know what JS should be applied to these buttons. In the end, it's generally better to control what JS is being loaded for each page.  Additionally, the files will be loaded in alphabetical order.  Often, external libraries will have a dependency on another JS file being loaded before it, and all your Javascript will error out if this load order is not honored.  Given that things load in alphabetical order it's unlikely things will magically be loaded in the right order.  Check the console in your browser to see if you are getting these types of errors and if so manually require each file in the order you need it to be loaded and get rid of `require tree`.
 
-The most common one is require and in fact we recommend explicitly loading asset dependencies using only require. require_tree and the such can lead to weird issues with load order and dependencies.
-
-Remember that when you require something the path you provide must be the asset path, as though accessed via /assets
+One last thing to remember, when you require something in your manifest file, the path you provide must be the asset path. If you have the file `comments.js` in the folder `/assets/javascripts/blog` you would need to use `//= require blog/comments` to include it in our manifest file.
 
 ### Loading a Manifest File in your layout
 
-Nothing special here, when you say javascript_include_tag it will see if it's a manifest an act accordingly loading all the dependencies or it will simply create a script tag for the single JS file.
+Now that we have our manifest file, we need to include it in our application. The only thing we need to do is use the javascript_include_tag in our application layout file.  This is just a rails helper that generates a script tag instructing the browser to load that JS file.
 
-When you see javascript_include_tag application you think 1 file was loaded but actually many were.
+**File: app/views/layouts/application.html.slim**
+```erb
+<%= javascript_include_tag "application" %>
+```
 
-Show the student that there is a script tag for each file in the manifest.
+Sprockets will then take care of loading our manifest file and determining what assets to load. If we are in development mode, each asset will be loaded individually.
 
-Show how to debug manifest files that require files that can't be found.
+```html
+<script src="assets/jquery.min.js" />
+<script src="assets/bootstrap.min.js" />
+<script src="assets/blogs.js" />
+```
 
-#### Manifests in Production
+In production mode, all the assets will be combined into a single file.
 
-Show what a concatenated manifest looks like in production.
+```html
+<script src="/assets/application-908e25f4bf641868d8683022a5b62f54.js" />
+```
 
-<p data-visibility='hidden'>View <a href='https://learn.co/lessons/javascript-manifests' title='Javascript Manifests'>Javascript Manifests</a> on Learn.co and start learning to code for free.</p>
+## Resources
+- http://guides.rubyonrails.org/asset_pipeline.html
+
+View [Javascript Manifests](https://learn.co/lessons/javascript-manifests "Javascript Manifests") on Learn.co and start learning to code for free.
